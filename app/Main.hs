@@ -203,7 +203,7 @@ eval env val@(String _) = return val
 eval env val@(Number _) = return val
 eval env val@(Bool _) = return val
 eval env (Atom id) = getVar env id
-eval enc (List [Atom "quote", val]) = return val
+eval env (List [Atom "quote", val]) = return val
 eval env (List [Atom "if", pred, conseq, alt]) =
   do
     result <- eval env pred
@@ -284,6 +284,7 @@ primitives =
     ("string>=?", strBoolBinop (>=)),
     ("car", car),
     ("cdr", cdr),
+    ("cons", cons),
     ("eq?", eqv),
     ("eqv?", eqv),
     ("equal?", equal)
@@ -395,8 +396,7 @@ equal badArgList = throwError $ NumArgs 2 badArgList
 
 ioPrimitives :: [(String, [LispVal] -> IOThrowsError LispVal)]
 ioPrimitives =
-  [
-    ("apply", applyProc),
+  [ ("apply", applyProc),
     ("open-input-file", makePort ReadMode),
     ("open-output-file", makePort WriteMode),
     ("close-input-file", closePort),
