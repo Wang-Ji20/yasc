@@ -232,6 +232,7 @@
     (else
      (pick (- n 1) (cdr lat)))))
 
+;; This is a partial function, in the sense that it may never ends.
 (define (keep-looking a sorn lat)
   (cond
     ((number? sorn)
@@ -241,7 +242,77 @@
 
 (looking 'caviar '(6 2 4 cavier 5 7 3))
 
-;; skip ch09 now
+(define (shift pair)
+  (pair-build (pair-first (pair-first pair))
+              (pair-build (pair-second (pair-first pair))
+                          (pair-second pair))))
+
+(define (align pora)
+  (cond
+    ((atom? pora) pora)
+    ((a-pair? (first pora))
+     (align (shift pora)))
+    (else (pair-build (pair-first pora)
+                      (align (pair-second pora))))))
+
+(define (revpair p)
+  (pair-build (pair-second p)
+              (pair-first p)))
+
+;; partial
+(define (shuffle pora)
+  (cond
+    ((atom? pora) pora)
+    ((a-pair? (first pora))
+     (shuffle (revpair pora)))
+    (else
+     (pair-build (pair-first pora)
+                 (shuffle (pair-second pora))))))
+
+;; halting problem
+
+; (define (last-try x)
+;   (and (will-stop? last-try)
+;        (eternity x)))
+
+;; Y-combinator
+(define almost-factorial
+  (lambda (f)
+    (lambda (n)
+      (if (= n 0)
+          1
+          (* n (f (- n 1)))))))
+
+(define fac-Y
+  (let ((x (lambda (self) (almost-factorial (self self)))))
+    (x x)))
+
+;;  (let ((x <expr1>)) <expr2>)
+;;  ==> ((lambda (x) <expr2>) <expr1>)
+(define Y-let-to-lambda
+  ((lambda (x) (x x))
+   (lambda (self)
+     (almost-factorial (self self)))))
+
+;; renaming
+(define Y-renamed
+  (lambda f
+    ((lambda (x) (x x))
+     (lambda (x) (f (x x))))))
+
+;; apply the last lambda
+(define Y
+  (lambda f
+    ((lambda x (f x x))
+     (lambda x (f x x)))))
+
+;; for strict order
+;; trick: (lambda y (f y)) === f, but lambda is not evaluated.
+(define Y-strict
+  (lambda f
+    ((lambda x (f (lambda y ((x x) y))))
+     (lambda x (f (lambda y ((x x) y)))))))
+
 ;; ch10
 
 (define new-entry pair-build)

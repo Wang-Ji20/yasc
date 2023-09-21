@@ -2,6 +2,10 @@
 
 This time use haskell.
 
+However this repo will not only contains this project.
+
+It combines my recent attempt to learn programming languages with Scheme Racket and ML.
+
 ## some good explainations I found
 
 The IO type is an instance of the Monad class (a class of types). Monad is a concept. To say a value is of a type of the monad class is to say:
