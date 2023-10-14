@@ -1,6 +1,6 @@
 # Yet Another Scheme Compiler
 
-This time use haskell.
+This time use haskell, racket & ocaml.
 
 However this repo will not only contains this project.
 
